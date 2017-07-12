@@ -95,7 +95,7 @@ $('#loginForm').submit(function(e) {
 		{
 			alert("login avvenuto con successo");
 			data.rows[0][0]
-			window.location.href= "SceltaPanini.html?Username="+ data.rows[0][0] + "&Classe="+data.rows[0][3];		
+			document.location.href= "./SceltaPanini.html?Username="+ data.rows[0][0] + "&Classe="+data.rows[0][3];		
 		}
 	})
 
