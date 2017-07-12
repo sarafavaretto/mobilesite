@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Form elements - jQuery Mobile Demos</title>
+		<link rel="stylesheet" href="./css/themes/default/jquery.mobile-1.4.5.min.css">
+		<link rel="stylesheet" href="./_assets/css/jqm.css">
+		<link rel="shortcut icon" href="./favicon.ico">
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+		<script src="./js/jquery.js"></script>
+		<script src="./_assets/js/index.js"></script>
+		<script src="./js/jquery.mobile-1.4.5.min.js"></script>
+		<script src="https://apis.google.com/js/api.js"></script>
+</head>
+<body>
+
+		<div data-role="page" class="jqm-demos" data-quicklinks="true">
+
+	<div data-role="header" class="jqm-header">
+			<h2><a href="../" title="jQuery Mobile Demos home"><img src="./_assets/img/scaruffi.png" alt="jQuery Mobile"></a></h2>
+		
+		
+		</div>
+		
+		<div role="main" class="ui-content jqm-content">
+
+			<h1>Scelta Merende:</h1>
+			<h3 id="Username"></h3>
+			<h3 id="Classe"></h3>
+			
+			<form id="sceltaForm" method="POST" action="https://www.googleapis.com/fusiontables/v2/query/">
+			
+
+			
+				<div data-demo-html="true">
+					<div class="ui-field-contain">
+						<label for="select-native-fc">Merende:</label>
+						<select required name="select-native-fc" id="select-native-fc">
+							<option></option>
+							<option value="1">Panino cotto</option>
+							<option value="2">Panino crudo</option>
+							<option value="3">Gnocco Salame</option>
+							<option value="4">Gnocco Salame</option>
+						</select>
+					</div>
+				</div>
+				<input type="text" style="display:none" name="sql" id="sql" value="insert into 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6 (CLASSE,NOME,COGNOME,SCELTA,DATA) values ('a,'a','f','f','')&key=AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0">
+	
+			
+				<button class="ui-shadow ui-btn ui-corner-all" >Conferma</button>
+				
+			</form>
+		
+	
+		</div><!-- /content -->
+	    
+	
+	</div><!-- /panel -->
+
+
+	
+	
+
+
+	<script language="javascript">
+ 
+	function getData(requestName){
+		if (requestName = (new RegExp('[?&]'+encodeURIComponent(requestName)+'=([^&]*)')).exec(location.search))
+			return decodeURIComponent(requestName[1]);
+	}
+	
+
+	$(document).ready(function(){
+		$("#Username").text("Utente: " + getData("Username"));
+		$("#Classe").text("Classe: " + getData("Classe"));
+	});
+	
+	$('#scZZZeltaForm').submit(function(e) {
+		e.preventDefault();
+		var tableId = "1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6";
+		var apiKey = "AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0";
+		var sSql =  "insert into "+ tableId +" (CLASSE,NOME,COGNOME,SCELTA,DATA) values ('"+ $('#Username').val() +"','"+ $('#Username').val() +"','"+ $('#Username').val() +"','"+ $('#Username').val() +",'')";//&key=" + apiKey;
+		var queryurl = "https://www.googleapis.com/fusiontables/v1/query/?sql="+ sSql;
+		
+		
+$.post( "https://www.googleapis.com/fusiontables/v2/query",{sql:sSql})
+  .done(function( data ) {
+    alert( "Data Loaded: " + data );
+  });
+
+  	/*$.getJSON( queryurl, function( data ) {
+			if (data.rows == undefined){
+				alert("Username o password errate");
+				return false;
+			}	
+			else
+			{
+				alert("login avvenuto con successo");
+				data.rows[0][0]
+				window.location.href= "./SceltaPanini.html?Username="+ data.rows[0][0] + "&Classe="+data.rows[0][3];		
+			}
+		})*/
+
+		//return false;
+	});
+	var serviceAccount = "student@turnkey-env-173022.iam.gserviceaccount.com";
+    var clientId = "293590021422-g899ro91b6hfg1tkg9q1f51tipekid90.apps.googleusercontent.com";
+              
+	var apiKey = "AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0";
+		
+    var scopes = 'https://www.googleapis.com/auth/fusiontables';
+
+	
+	
+	start();
+function start() {
+  // 2. Initialize the JavaScript client library.
+  gapi.client.init({
+    'apiKey': apiKey,
+    // Your API key will be automatically added to the Discovery Document URLs.
+    'discoveryDocs': ['https://people.googleapis.com/$discovery/rest'],
+    // clientId and scope are optional if auth is not required.
+    'clientId': clientId,
+    'scope': 'profile',
+  }).then(function() {
+    // 3. Initialize and make the API request.
+    return gapi.client.people.people.get({
+      'resourceName': 'people/me',
+      'requestMask.includeField': 'person.names'
+    });
+  }).then(function(response) {
+    console.log(response.result);
+  }, function(reason) {
+    console.log('Error: ' + reason.result.error.message);
+  });
+};
+// 1. Load the JavaScript client library.
+gapi.load('client', start);
+</script>
+    
+	
+	
+</body>
+</html>
