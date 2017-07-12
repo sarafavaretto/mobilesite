@@ -68,7 +68,7 @@ function checkPassword(Usr, Pwd){
 
 	var tableId = "1seiYS61e_U8ZBaZlBtcTsEFTp-MAv1WtJ-855z2t";
 	var apiKey = "AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0";
-	var sSql =  "SELECT%20*%20FROM%20"+ tableId +" where Username ='"+ Usr +"' and Password = '"+ Pwd +"'&key=" + apiKey;
+	var sSql =  "SELECT%20*%20FROM%20"+ tableId +" where ucase(Username) =ucase('"+ Usr +"') and Password = '"+ Pwd +"'&key=" + apiKey;
 	var queryurl = "https://www.googleapis.com/fusiontables/v1/query/?sql="+ sSql;
 
 	$.getJSON( queryurl, function( data ) {
@@ -79,7 +79,6 @@ function checkPassword(Usr, Pwd){
 		else
 		{
 			alert("login avvenuto con successo");
-		
 			$('#loginForm').submit();
 		}
 	});
