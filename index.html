@@ -5,11 +5,11 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Form elements - jQuery Mobile Demos</title>
 		<link rel="stylesheet" href="./css/themes/default/jquery.mobile-1.4.5.min.css">
-		<link rel="stylesheet" href="/assets/css/jqm.css">
+		<link rel="stylesheet" href="./assets/css/jqm.css">
 		<link rel="shortcut icon" href="./favicon.ico">
 		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
 		<script src="./js/jquery.js"></script>
-		<script src="/assets/js/index.js"></script>
+		<script src="./assets/js/index.js"></script>
 		<script src="./js/jquery.mobile-1.4.5.min.js"></script>
 	</head>
 	<body>
@@ -19,27 +19,48 @@
 				<h2><a href="./" title="jQuery Mobile Demos home"><img src="./assets/img/scaruffi.png" alt="jQuery Mobile"></a></h2>
 				</div><!-- /header -->
 
-			<div role="main" class="ui-content jqm-content">
+			<div role="main"  class="ui-content jqm-content">
+				<div id="login">
+					<h1>Lista Panini</h1>
 
-				<h1>Lista Panini</h1>
+					<form id="loginForm" method="GET" action="./SceltaPanini.html">
+		   
+					
+						<div data-demo-html="true">
+							<label for="Username">Username:</label>
+							<input type="text" required placeholder="Inserisci il tuo username" name="Username" id="Username" value="">
 
-				<form id="loginForm" method="GET" action="./SceltaPanini.html">
-       
-				
-					<div data-demo-html="true">
-						<label for="Username">Username:</label>
-						<input type="text" required placeholder="Inserisci il tuo username" name="Username" id="Username" value="">
+							<label for="Password">Password:</label>
+							<input type="password" required name="Password" id="Password" value="" autocomplete="off">
+							<button class="ui-shadow ui-btn ui-corner-all" onclick="window.location.href='./SceltaPanini.html?test=sara'" >Cambia Password</button>
+							<button class="ui-shadow ui-btn ui-corner-all" >Login</button>
+						</div><!-- /demo-html -->
+					</form>
+				</div>
+				<div id="sceltaPanini">
+					<h1>Scelta Merende:</h1>
+					<h3 id="nomeUtente"></h3>
+					<h3 id="Classe"></h3>
+					<form id="sceltaForm" method="POST" action="https://www.googleapis.com/fusiontables/v2/query/">
+						<div data-demo-html="true">
+							<div class="ui-field-contain">
+								<label for="select-native-fc">Merende:</label>
+								<select required name="select-native-fc" id="select-native-fc">
+									<option></option>
+									<option value="1">Panino cotto</option>
+									<option value="2">Panino crudo</option>
+									<option value="3">Gnocco Salame</option>
+									<option value="4">Gnocco Salame</option>
+								</select>
+							</div>
+						<button class="ui-shadow ui-btn ui-corner-all" >Conferma</button>
 
-						<label for="Password">Password:</label>
-						<input type="password" required name="Password" id="Password" value="" autocomplete="off">
-						<button class="ui-shadow ui-btn ui-corner-all" onclick="window.location.href='./SceltaPanini.html?test=sara'" >Cambia Password</button>
-						<button class="ui-shadow ui-btn ui-corner-all" >Login</button>
-					</div><!-- /demo-html -->
-				</form>
+							</div>
 
-
-
-</div><!-- /page -->
+							</form>
+				</div>
+			</div><!-- /page -->
+	
 <script language="javascript">
 
 
@@ -83,8 +104,6 @@ $('#loginForm').submit(function(e) {
 	var apiKey = "AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0";
 	var sSql =  "SELECT%20*%20FROM%20"+ tableId +" where Username ='"+ $('#Username').val() +"' and Password = '"+ $('#Password').val() +"'&key=" + apiKey;
 	var queryurl = "https://www.googleapis.com/fusiontables/v1/query/?sql="+ sSql;
-	
-	
 
 	$.getJSON( queryurl, function( data ) {
 		if (data.rows == undefined){
@@ -94,13 +113,33 @@ $('#loginForm').submit(function(e) {
 		else
 		{
 			alert("login avvenuto con successo");
-			data.rows[0][0]
-			document.location.href= "./SceltaPanini.html?Username="+ data.rows[0][0] + "&Classe="+data.rows[0][3];		
+			window.location.href = window.location.href + "?page=sceltaPanini&Nome="+ data.rows[0][3] + "&Cognome="+ data.rows[0][4] + "&Classe="+data.rows[0][5]
 		}
 	})
 
 	return false;
 });
+
+function getData(requestName){
+	if (requestName = (new RegExp('[?&]'+encodeURIComponent(requestName)+'=([^&]*)')).exec(location.search))
+	return decodeURIComponent(requestName[1]);
+}
+
+
+
+$(document).ready(function(){
+	if (getData("page")=="sceltaPanini"){
+		$("#login").css("display", "none");
+	}
+	else
+	{
+		$("#sceltaPanini").css("display", "none");
+	}
+
+	$("#nomeUtente").text("Utente: " + getData("Nome") + " " +getData("Cognome"));
+	$("#Classe").text("Classe: " + getData("Classe"));
+});
+	
 
 </script>
 </body>
