@@ -30,14 +30,12 @@
         }
         function insert_row() {
             gapi.client.setApiKey('AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0');
-
+debugger;
             gapi.client.load('fusiontables', 'v1', function () {                
-                var i;
-                for (i = 0; i < 32; i++) {
-                    var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(col0,col1,col2,DATA) VALUES ('a','a', 'a',getdate())"; 
-                    gapi.client.fusiontables.query.sql({ sql: query }).execute(
-					function (response) { console.log(response); });
-                }
+				var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(col0,col1,col2,DATA) VALUES ('a','a', 'a',getdate())"; 
+				gapi.client.fusiontables.query.sql({ sql: query }).execute(
+				function (response) { console.log(response); });
+			
             });
         }
     </script>
