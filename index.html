@@ -17,8 +17,7 @@
 <script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
     <script type="text/javascript">
         function auth() {
-		debugger
-            var config = {
+	        var config = {
                 'client_id': '293590021422-g899ro91b6hfg1tkg9q1f51tipekid90.apps.googleusercontent.com',
                 'scope': 'https://www.googleapis.com/auth/fusiontables',
                 'immediate': false
@@ -30,7 +29,6 @@
         }
         function insert_row() {
             gapi.client.setApiKey('AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0');
-debugger;
             gapi.client.load('fusiontables', 'v1', function () {                
 				var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(col0,col1,col2,DATA) VALUES ('a','a', 'a',getdate())"; 
 				gapi.client.fusiontables.query.sql({ sql: query }).execute(
@@ -69,12 +67,7 @@ debugger;
 							</div><!-- /demo-html -->
 
 					</form>
-					<button onclick="auth();">Authorize</button>
-					<br />
-					<button onclick="insert_row();">Insert Data</button>
-					<br />
-					<button onclick="showMap();">Show Map</button>
-
+				
 				</div>
 				<div id="sceltaPanini">
 					<h1>Scelta Merende:</h1>
@@ -92,20 +85,20 @@ debugger;
 									<option value="4">Gnocco Salame</option>
 								</select>
 							</div>
-						<button class="ui-shadow ui-btn ui-corner-all" >Conferma</button>
-
-							</div>
-
-							</form>
+							<button class="ui-shadow ui-btn ui-corner-all" >Conferma</button>
+							<button onclick="auth();">Authorize</button>
+							<br />
+							<button onclick="insert_row();">Insert Data</button>
+						</div>
+					</form>
 				</div>
 			</div><!-- /page -->
 	
 <script language="javascript">
 
 
-	function query(){
+function query(){
     querytail = "&jsonCallback=?";
-	
     var jqxhr=$.get(queryurl + querytail, queryHandler, "jsonp")
 }
 
@@ -137,6 +130,24 @@ $('#loginForm').submit(function(e) {
 	return false;
 });
 
+$('#sceltaForm').submit(function(e) {
+	auth();
+	debugger
+    var d = new Date();
+	var MM = (d.getMonth()+1).toString();
+	var YY = (d.getYear()).toString();
+	var dd = (d.getDay()).toString();
+	var day = MM + "/" + dd + "/" + YY;
+	gapi.client.setApiKey('AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0');
+	gapi.client.load('fusiontables', 'v1', function () {                
+		var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(col0,col1,col2,DATA) " +
+		" VALUES ('a','a', 'a','" + day + "')"; 
+		gapi.client.fusiontables.query.sql({ sql: query }).execute(
+		function (response) { console.log(response); });
+     });
+
+	return false;
+});
 function getData(requestName){
 	if (requestName = (new RegExp('[?&]'+encodeURIComponent(requestName)+'=([^&]*)')).exec(location.search))
 	return decodeURIComponent(requestName[1]);
