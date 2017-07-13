@@ -76,24 +76,28 @@
 					<form id="sceltaForm" method="POST" action="https://www.googleapis.com/fusiontables/v2/query/">
 						<div data-demo-html="true">
 							<div class="ui-field-contain">
-								<label for="select-native-fc">Merende:</label>
-								<select required name="select-native-fc" id="select-native-fc">
+								<label for="listaMerende">Merende:</label>
+								<select required name="listaMerende" id="listaMerende">
 									<option></option>
 									<option value="1">Panino cotto</option>
 									<option value="2">Panino crudo</option>
 									<option value="3">Gnocco Salame</option>
-									<option value="4">Gnocco Salame</option>
+									<option value="4">Gnocco prosciutto</option>
 								</select>
 							</div>
 							<button class="ui-shadow ui-btn ui-corner-all" >Conferma</button>
-							<button onclick="auth();">Authorize</button>
-							<br />
-							<button onclick="insert_row();">Insert Data</button>
+							
 						</div>
 					</form>
+					<button id="listaClasse" onclick="viewListaClasse()" class="ui-shadow ui-btn ui-corner-all" >Lista Panini </button>
+							
 				</div>
 			</div><!-- /page -->
 	
+ 
+<div id="dialog"  style="display:none" title="Basic dialog">
+  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div>
 <script language="javascript">
 
 
@@ -135,13 +139,13 @@ $('#sceltaForm').submit(function(e) {
 	debugger
     var d = new Date();
 	var MM = (d.getMonth()+1).toString();
-	var YY = (d.getYear()).toString();
+	var YY = (d.getFullYear()).toString();
 	var dd = (d.getDay()).toString();
 	var day = MM + "/" + dd + "/" + YY;
 	gapi.client.setApiKey('AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0');
 	gapi.client.load('fusiontables', 'v1', function () {                
-		var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(col0,col1,col2,DATA) " +
-		" VALUES ('a','a', 'a','" + day + "')"; 
+		var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(CLASSE,NOME,COGNOME,SCELTA,DATA) " +
+		" VALUES ('" + getData("Classe") + "','" + getData("Nome")+"', '"+ getData("Cognome")+"','"+ $('#listaMerende').find(":selected").text();+ "','" + day + "')"; 
 		gapi.client.fusiontables.query.sql({ sql: query }).execute(
 		function (response) { console.log(response); });
      });
@@ -168,7 +172,16 @@ $(document).ready(function(){
 	$("#Classe").text("Classe: " + getData("Classe"));
 });
 	
-
+function viewListaClasse(){
+	 $( function() {
+  $( "#dialog" ).show();
+    
+  $( "#dialog" ).dialog();
+  
+  } );
+  
+  
+}
 </script>
 </body>
 </html>
