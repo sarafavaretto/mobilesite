@@ -204,8 +204,10 @@ function caricaListaClasse(){
 				htmlList += "</tr>";
 			}
 			
-			htmlList += "</table>"			
-			$("#listDialog").find("a").before(htmlList) ;
+			htmlList += "</table>";
+			htmlList += '<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Indietro</a>';
+			
+			$("#listDialog").html(htmlList) ;
 		}
 	})	
 
