@@ -89,15 +89,24 @@
 							
 						</div>
 					</form>
-					<button id="listaClasse" onclick="viewListaClasse()" class="ui-shadow ui-btn ui-corner-all" >Lista Panini </button>
-							
+					<a href="#popupDialog" 
+						data-rel="popup"  data-position-to="window" data-transition="pop"
+						class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-delete ui-btn-icon-left ui-btn-a">Lista Panini</a>
 				</div>
 			</div><!-- /page -->
 	
+			
+		<div data-role="popup" id="popupDialog" data-overlay-theme="a" data-theme="a" data-dismissible="false" 
+				style="max-width:400px;">
+		    <div data-role="header" data-theme="a">
+		    	<h1>Lista</h1>
+		    </div>
+		    <div id ="listDialog" role="main" class="ui-content">
+		        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Indietro</a>
+		    </div>
+		</div>
+		 
  
-<div id="dialog"  style="display:none" title="Basic dialog">
-  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-</div>
 <script language="javascript">
 
 
@@ -136,7 +145,7 @@ $('#loginForm').submit(function(e) {
 
 $('#sceltaForm').submit(function(e) {
 	auth();
-	debugger
+	
     var d = new Date();
 	var MM = (d.getMonth()+1).toString();
 	var YY = (d.getFullYear()).toString();
@@ -144,8 +153,9 @@ $('#sceltaForm').submit(function(e) {
 	var day = MM + "/" + dd + "/" + YY;
 	gapi.client.setApiKey('AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0');
 	gapi.client.load('fusiontables', 'v1', function () {                
-		var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(CLASSE,NOME,COGNOME,SCELTA,DATA) " +
-		" VALUES ('" + getData("Classe") + "','" + getData("Nome")+"', '"+ getData("Cognome")+"','"+ $('#listaMerende').find(":selected").text();+ "','" + day + "')"; 
+		var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(CLASSE,NOME,COGNOME,SCELTA) " +
+		" VALUES ('" + getData("Classe") + "','" + getData("Nome")+"', '"+ getData("Cognome")+"','"+ $('#listaMerende').find(":selected").text();+ "')"; 
+		debugger;
 		gapi.client.fusiontables.query.sql({ sql: query }).execute(
 		function (response) { console.log(response); });
      });
@@ -170,18 +180,51 @@ $(document).ready(function(){
 
 	$("#nomeUtente").text("Utente: " + getData("Nome") + " " +getData("Cognome"));
 	$("#Classe").text("Classe: " + getData("Classe"));
+	caricaListaClasse();
 });
 	
-function viewListaClasse(){
-	 $( function() {
-  $( "#dialog" ).show();
-    
-  $( "#dialog" ).dialog();
-  
-  } );
-  
-  
-}
+
+function caricaListaClasse(){
+
+
+	
+	var tableId = "1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6";
+	var apiKey = "AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0";
+	var sSql =  "SELECT%20*%20FROM%20"+ tableId +" where CLASSE = '"+ getData("Classe") +"'&key=" + apiKey;
+	var queryurl = "https://www.googleapis.com/fusiontables/v1/query/?sql="+ sSql;
+
+	$.getJSON( queryurl, function( data ) {
+		if (data.rows == undefined){
+			alert("Nessun dato");
+			return false;
+		}	
+		else
+		{
+			var htmlList ="<table><tr>";
+			var numCol = data.columns.length;
+			for ( i= 0 ; i < numCol  ;i++){
+				htmlList += "<td>"+ data.columns[i] + "</td>";
+			}
+			
+
+			htmlList += "</tr>";
+			
+			for ( i= 0 ; i< data.rows.length ;i++){
+				htmlList += "<tr>";
+				for ( j= 0 ; j < numCol ;j++){
+
+					htmlList += "<td>"+ data.rows[i][j] + "</td>";
+				}	
+				htmlList += "</tr>";
+			}
+			
+			htmlList += "</table>"			
+			$("#listDialog").find("a").before(htmlList) ;
+		}
+	//})
+	})	
+
+	}
 </script>
 </body>
 </html>
