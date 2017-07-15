@@ -92,7 +92,7 @@
 		    <div data-role="header" data-theme="a">
 		    	Lista
 		    </div>
-		    <div id ="listDialog" role="main" class="ui-content">
+		    <div  style="height:100px;overflow:auto;" id ="listDialog" role="main" class="ui-content">
 		        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Indietro</a>
 		    </div>
 		</div>
@@ -133,7 +133,7 @@ $('#sceltaForm').submit(function(e) {
     var d = new Date();
 	var MM = (d.getMonth()+1).toString();
 	var YY = (d.getFullYear()).toString();
-	var dd = (d.getDay()).toString();
+	var dd = (d.getDate()).toString();
 	var day = MM + "/" + dd + "/" + YY;
 	gapi.client.setApiKey('AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0');
 	gapi.client.load('fusiontables', 'v1', function () {                
@@ -203,7 +203,7 @@ function caricaListaClasse(){
 				}	
 				htmlList += "</tr>";
 			}
-			
+			htmlList += "<tr><td colspan=" + numCol+ " style='align:left'>Tot: </td></tr>"
 			htmlList += "</table>";
 			htmlList += '<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Indietro</a>';
 			
