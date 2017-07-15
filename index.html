@@ -90,7 +90,7 @@
 		<div data-role="popup" id="popupDialog" data-overlay-theme="a" data-theme="a" data-dismissible="false" 
 				style="max-width:400px;">
 		    <div data-role="header" data-theme="a">
-		    	<h1>Lista</h1>
+		    	Lista
 		    </div>
 		    <div id ="listDialog" role="main" class="ui-content">
 		        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Indietro</a>
@@ -117,7 +117,11 @@ $('#loginForm').submit(function(e) {
 		else
 		{
 			alert("login avvenuto con successo");
-			window.location.href = window.location.href + "?page=sceltaPanini&Nome="+ data.rows[0][3] + "&Cognome="+ data.rows[0][4] + "&Classe="+data.rows[0][5]
+			sessionStorage.Nome  = data.rows[0][3];
+			sessionStorage.Cognome  = data.rows[0][4];
+			sessionStorage.Classe  = data.rows[0][5];
+			sessionStorage.Page  = "sceltaPanini";
+			window.location.href = window.location.href
 		}
 	})
 
@@ -134,11 +138,12 @@ $('#sceltaForm').submit(function(e) {
 	gapi.client.setApiKey('AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0');
 	gapi.client.load('fusiontables', 'v1', function () {                
 		var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(CLASSE,NOME,COGNOME,SCELTA,DATA) " +
-		" VALUES ('" + getData("Classe") + "','" + getData("Nome")+"', '"+ getData("Cognome")+"','"+ $('#listaMerende').find(":selected").text() + "','" + day + "')"; 
+		" VALUES ('" + sessionStorage.Classe + "','" + sessionStorage.Nome +"', '"+ sessionStorage.Cognome +"','"+ $('#listaMerende').find(":selected").text() + "','" + day + "')"; 
 		gapi.client.fusiontables.query.sql({ sql: query }).execute(
 		function (response) { console.log(response);
 			alert("Dati inseriti correttamente");
-			window.location.reload()
+			caricaListaClasse();
+			window.location.reload();
 		});
 		
 	});
@@ -155,7 +160,7 @@ function getData(requestName){
 
 //Funzione eseguite al caricamento della pagina//
 $(document).ready(function(){
-	if (getData("page")=="sceltaPanini"){
+	if ( sessionStorage.Page =="sceltaPanini"){
 		$("#login").css("display", "none");
 	}
 	else
@@ -163,8 +168,8 @@ $(document).ready(function(){
 		$("#sceltaPanini").css("display", "none");
 	}
 
-	$("#nomeUtente").text("Utente: " + getData("Nome") + " " +getData("Cognome"));
-	$("#Classe").text("Classe: " + getData("Classe"));
+	$("#nomeUtente").text("Utente: " + sessionStorage.Nome + " " + sessionStorage.Cognome);
+	$("#Classe").text("Classe: " + sessionStorage.Classe);
 	caricaListaClasse();
 });
 	
@@ -173,7 +178,7 @@ function caricaListaClasse(){
 	
 	var tableId = "1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6";
 	var apiKey = "AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0";
-	var sSql =  "SELECT%20*%20FROM%20"+ tableId +" where CLASSE = '"+ getData("Classe") +"'&key=" + apiKey;
+	var sSql =  "SELECT%20*%20FROM%20"+ tableId +" where CLASSE = '"+ sessionStorage.Classe +"'&key=" + apiKey;
 	var queryurl = "https://www.googleapis.com/fusiontables/v1/query/?sql="+ sSql;
 
 	$.getJSON( queryurl, function( data ) {
