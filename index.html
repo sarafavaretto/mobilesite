@@ -14,8 +14,8 @@
 		<script src="./js/jquery.mobile-1.4.5.min.js"></script>
 		
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
-<script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
-    <script type="text/javascript">
+		<script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
+		<script type="text/javascript">
         function auth() {
 	        var config = {
                 'client_id': '293590021422-g899ro91b6hfg1tkg9q1f51tipekid90.apps.googleusercontent.com',
@@ -27,16 +27,113 @@
                 console.log(gapi.auth.getToken());
             });
         }
-        function insert_row() {
-            gapi.client.setApiKey('AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0');
-            gapi.client.load('fusiontables', 'v1', function () {                
-				var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(col0,col1,col2,DATA) VALUES ('a','a', 'a',getdate())"; 
+												
+		$('#loginForm').submit(function(e) {
+			e.preventDefault();
+			var tableId = "1seiYS61e_U8ZBaZlBtcTsEFTp-MAv1WtJ-855z2t";
+			var apiKey = "AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0";
+			var sSql =  "SELECT%20*%20FROM%20"+ tableId +" where Username = '"+ $('#Username').val().toLowerCase() +"' and Password = '"+ $('#Password').val() +"'&key=" + apiKey;
+			var queryurl = "https://www.googleapis.com/fusiontables/v1/query/?sql="+ sSql;
+
+			$.getJSON( queryurl, function( data ) {
+				if (data.rows == undefined){
+					alert("Username o password errate");
+					return false;
+				}	
+				else
+				{
+					alert("login avvenuto con successo");
+					window.location.href = window.location.href + "?page=sceltaPanini&Nome="+ data.rows[0][3] + "&Cognome="+ data.rows[0][4] + "&Classe="+data.rows[0][5]
+				}
+			})
+
+			return false;
+		});
+
+		$('#sceltaForm').submit(function(e) {
+			auth();
+			var d = new Date();
+			var MM = (d.getMonth()+1).toString();
+			var YY = (d.getFullYear()).toString();
+			var dd = (d.getDay()).toString();
+			var day = MM + "/" + dd + "/" + YY;
+			gapi.client.setApiKey('AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0');
+			gapi.client.load('fusiontables', 'v1', function () {                
+				var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(CLASSE,NOME,COGNOME,SCELTA,DATA) " +
+				" VALUES ('" + getData("Classe") + "','" + getData("Nome")+"', '"+ getData("Cognome")+"','"+ $('#listaMerende').find(":selected").text() + "','" + day + "')"; 
 				gapi.client.fusiontables.query.sql({ sql: query }).execute(
-				function (response) { console.log(response); });
+				function (response) { console.log(response);
+					alert("Dati inseriti correttamente");
+					window.location.reload()
+				});
+				
+			});
+
+			return false;
+		});
+
+		//prende i dati passati in GET//
+		function getData(requestName){
+			if (requestName = (new RegExp('[?&]'+encodeURIComponent(requestName)+'=([^&]*)')).exec(location.search))
+			return decodeURIComponent(requestName[1]);
+		}
+
+
+		//Funzione eseguite al caricamento della pagina//
+		$(document).ready(function(){
+			if (getData("page")=="sceltaPanini"){
+				$("#login").css("display", "none");
+			}
+			else
+			{
+				$("#sceltaPanini").css("display", "none");
+			}
+
+			$("#nomeUtente").text("Utente: " + getData("Nome") + " " +getData("Cognome"));
+			$("#Classe").text("Classe: " + getData("Classe"));
+			caricaListaClasse();
+		});
 			
-            });
-        }
-    </script>
+
+		function caricaListaClasse(){
+			
+			var tableId = "1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6";
+			var apiKey = "AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0";
+			var sSql =  "SELECT%20*%20FROM%20"+ tableId +" where CLASSE = '"+ getData("Classe") +"'&key=" + apiKey;
+			var queryurl = "https://www.googleapis.com/fusiontables/v1/query/?sql="+ sSql;
+
+			$.getJSON( queryurl, function( data ) {
+				if (data.rows == undefined){
+					return false;
+				}	
+				else
+				{
+					var htmlList ="<table><tr>";
+					var numCol = data.columns.length;
+					for ( i= 0 ; i < numCol  ;i++){
+						htmlList += "<td>"+ data.columns[i] + "</td>";
+					}
+					
+
+					htmlList += "</tr>";
+					
+					for ( i= 0 ; i< data.rows.length ;i++){
+						htmlList += "<tr>";
+						for ( j= 0 ; j < numCol ;j++){
+
+							htmlList += "<td>"+ data.rows[i][j] + "</td>";
+						}	
+						htmlList += "</tr>";
+					}
+					
+					htmlList += "</table>"			
+					$("#listDialog").find("a").before(htmlList) ;
+				}
+			})	
+
+		}
+
+		</script>
 
 
 
@@ -105,125 +202,5 @@
 		        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Indietro</a>
 		    </div>
 		</div>
-		 
- 
-<script language="javascript">
-
-
-function query(){
-    querytail = "&jsonCallback=?";
-    var jqxhr=$.get(queryurl + querytail, queryHandler, "jsonp")
-}
-
-
-function queryHandler(data) {
-    // display the first row of retrieved data
-    alert(data.table.rows[0]);
-}		
-								
-$('#loginForm').submit(function(e) {
-	e.preventDefault();
-	var tableId = "1seiYS61e_U8ZBaZlBtcTsEFTp-MAv1WtJ-855z2t";
-	var apiKey = "AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0";
-	var sSql =  "SELECT%20*%20FROM%20"+ tableId +" where Username = '"+ $('#Username').val().toLowerCase() +"' and Password = '"+ $('#Password').val() +"'&key=" + apiKey;
-	var queryurl = "https://www.googleapis.com/fusiontables/v1/query/?sql="+ sSql;
-
-	$.getJSON( queryurl, function( data ) {
-		if (data.rows == undefined){
-			alert("Username o password errate");
-			return false;
-		}	
-		else
-		{
-			alert("login avvenuto con successo");
-			window.location.href = window.location.href + "?page=sceltaPanini&Nome="+ data.rows[0][3] + "&Cognome="+ data.rows[0][4] + "&Classe="+data.rows[0][5]
-		}
-	})
-
-	return false;
-});
-
-$('#sceltaForm').submit(function(e) {
-	auth();
-	debugger
-    var d = new Date();
-	var MM = (d.getMonth()+1).toString();
-	var YY = (d.getFullYear()).toString();
-	var dd = (d.getDay()).toString();
-	var day = MM + "/" + dd + "/" + YY;
-	gapi.client.setApiKey('AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0');
-	gapi.client.load('fusiontables', 'v1', function () {                
-		var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(CLASSE,NOME,COGNOME,SCELTA,DATA) " +
-		" VALUES ('" + getData("Classe") + "','" + getData("Nome")+"', '"+ getData("Cognome")+"','"+ $('#listaMerende').find(":selected").text() + "','" + day + "')"; 
-		gapi.client.fusiontables.query.sql({ sql: query }).execute(
-		function (response) { console.log(response); });
-     });
-
-	return false;
-});
-function getData(requestName){
-	if (requestName = (new RegExp('[?&]'+encodeURIComponent(requestName)+'=([^&]*)')).exec(location.search))
-	return decodeURIComponent(requestName[1]);
-}
-
-
-
-$(document).ready(function(){
-	if (getData("page")=="sceltaPanini"){
-		$("#login").css("display", "none");
-	}
-	else
-	{
-		$("#sceltaPanini").css("display", "none");
-	}
-
-	$("#nomeUtente").text("Utente: " + getData("Nome") + " " +getData("Cognome"));
-	$("#Classe").text("Classe: " + getData("Classe"));
-	caricaListaClasse();
-});
-	
-
-function caricaListaClasse(){
-
-
-	
-	var tableId = "1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6";
-	var apiKey = "AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0";
-	var sSql =  "SELECT%20*%20FROM%20"+ tableId +" where CLASSE = '"+ getData("Classe") +"'&key=" + apiKey;
-	var queryurl = "https://www.googleapis.com/fusiontables/v1/query/?sql="+ sSql;
-
-	$.getJSON( queryurl, function( data ) {
-		if (data.rows == undefined){
-			alert("Nessun dato");
-			return false;
-		}	
-		else
-		{
-			var htmlList ="<table><tr>";
-			var numCol = data.columns.length;
-			for ( i= 0 ; i < numCol  ;i++){
-				htmlList += "<td>"+ data.columns[i] + "</td>";
-			}
-			
-
-			htmlList += "</tr>";
-			
-			for ( i= 0 ; i< data.rows.length ;i++){
-				htmlList += "<tr>";
-				for ( j= 0 ; j < numCol ;j++){
-
-					htmlList += "<td>"+ data.rows[i][j] + "</td>";
-				}	
-				htmlList += "</tr>";
-			}
-			
-			htmlList += "</table>"			
-			$("#listDialog").find("a").before(htmlList) ;
-		}
-	//})
-	})	
-
-	}
-</script>
-</body>
+	</body>
 </html>
