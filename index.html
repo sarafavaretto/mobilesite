@@ -133,8 +133,8 @@ $('#sceltaForm').submit(function(e) {
 	var day = MM + "/" + dd + "/" + YY;
 	gapi.client.setApiKey('AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0');
 	gapi.client.load('fusiontables', 'v1', function () {                
-		var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(CLASSE,NOME,COGNOME,SCELTA,DATA) " +
-		" VALUES ('" + sessionStorage.Classe + "','" + sessionStorage.Nome +"', '"+ sessionStorage.Cognome +"','"+ $('#listaMerende').find(":selected").text() + "','" + day + "')"; 
+		var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(CLASSE,NOME,COGNOME,SCELTA,DATA,PREZZO) " +
+		" VALUES ('" + sessionStorage.Classe + "','" + sessionStorage.Nome +"', '"+ sessionStorage.Cognome +"','"+ $('#listaMerende').find(":selected").text() + "','" + day + "',1)"; 
 		gapi.client.fusiontables.query.sql({ sql: query }).execute(
 		function (response) { console.log(response);
 			alert("Dati inseriti correttamente");
@@ -214,16 +214,21 @@ function caricaListaPaniniClasse(){
 			
 
 			htmlList += "</tr></thead><tbody>";
-			
+			var price = 0 ;
 			for ( i= 0 ; i< data.rows.length ;i++){
 				htmlList += "<tr>";
-				for ( j= 0 ; j < numCol ;j++){
+				for ( j = 0 ; j < numCol ;j++){
 
 					htmlList += "<th>"+ data.rows[i][j] + "</th>";
+					
+					if (j == numCol - 1 ){
+						price = price + Number(data.rows[i][j]);
+					}	
+					
 				}	
 				htmlList += "</tr></tbody>";
 			}
-			htmlList += "<tr><th colspan=" + numCol+ " style='align:left'>Tot: </th></tr>"
+			htmlList += "<tr><th colspan=" + numCol+ " style='align:right'>Tot: " + price.toString() + "</th></tr>"
 			htmlList += "</tbody></table>";
 			htmlList += '<button id="tornaIndietro"  data-inline="true"  class="ui-btn ui-icon-back ui-btn-icon-left ui-btn-inline ui-shadow ui-corner-all" onclick="goToPage(\'sceltaAzione\')">Torna Indietro</button>';
 			htmlList += "</div>";
@@ -231,8 +236,8 @@ function caricaListaPaniniClasse(){
 			$("#listaPanini").html(htmlList) ;
 		}
 	})	
-
 }
+
 function goToPage(idPage){
 	sessionStorage.Page  = idPage;
 	window.location.href = window.location.href;
