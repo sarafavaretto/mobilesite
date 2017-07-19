@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -137,7 +137,9 @@ $('#sceltaForm').submit(function(e) {
 		var query = "INSERT INTO 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6(CLASSE,NOME,COGNOME,SCELTA,DATA,PREZZO) " +
 		" VALUES ('" + sessionStorage.Classe + "','" + sessionStorage.Nome +"', '"+ sessionStorage.Cognome +"','"+ $('#listaMerende').find(":selected").text() + "','" + day + "',1)"; 
 		gapi.client.fusiontables.query.sql({ sql: query }).execute(
-		function (response) { console.log(response);
+		function (response) {
+                        debugger;
+                        console.log(response);
 			alert("Dati inseriti correttamente");
 			goToPage("sceltaAzione");
 		});
@@ -258,3 +260,4 @@ function goToPage(idPage){
 </script>
 </body>
 </html>
+
