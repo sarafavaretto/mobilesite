@@ -966,6 +966,7 @@ function insertData(){
                 'immediate': false
             };
             gapi.auth.authorize(config, function () {
+				insertData()
                 console.log('login complete');
                 console.log(gapi.auth.getToken());
             });
