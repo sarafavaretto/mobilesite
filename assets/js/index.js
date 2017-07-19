@@ -934,37 +934,12 @@ eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a
 
 
 								
-$('#loginForm').submit(function(e) {
-	e.preventDefault();
-	var tableId = "1seiYS61e_U8ZBaZlBtcTsEFTp-MAv1WtJ-855z2t";
-	var apiKey = "AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0";
-	var sSql =  "SELECT%20*%20FROM%20"+ tableId +" where Username = '"+ $('#Username').val().toLowerCase() +"' and Password = '"+ $('#Password').val() +"'&key=" + apiKey;
-	var queryurl = "https://www.googleapis.com/fusiontables/v1/query/?sql="+ sSql;
 
-	$.getJSON( queryurl, function( data ) {
-		if (data.rows == undefined){
-			alert("Username o password errate");
-			return false;
-		}	
-		else
-		{
-			alert("login avvenuto con successo");
-			sessionStorage.Nome  = data.rows[0][3];
-			sessionStorage.Cognome  = data.rows[0][4];
-			sessionStorage.Classe  = data.rows[0][5];
-			sessionStorage.Login = true;
-			goToPage("sceltaAzione");
-			
-		}
-	})
 
-	return false;
-});
 
-$('#sceltaForm').submit(function(e) {
-        debugger;
-	auth();
-    var d = new Date();
+function insertData(){
+	
+	var d = new Date();
 	var MM = (d.getMonth()+1).toString();
 	var YY = (d.getFullYear()).toString();
 	var dd = (d.getDate()).toString();
@@ -982,10 +957,8 @@ $('#sceltaForm').submit(function(e) {
 		});
 		
 	});
-
-	return false;
-});
-
+	
+}
  function auth() {
 	        var config = {
                 'client_id': '293590021422-g899ro91b6hfg1tkg9q1f51tipekid90.apps.googleusercontent.com',
