@@ -963,8 +963,8 @@ function insertData(){
 //i dati e la chiave sono passati in charo//
 
 function auth() {
-	
-   var theme = $.mobile.loader.prototype.options.theme,
+	//	$('#sceltaForm').children(':button').attr('disabled', 'disabled');
+/*   var theme = $.mobile.loader.prototype.options.theme,
         msgText = "",
         textVisible = false,
         textonly = false;
@@ -976,8 +976,24 @@ function auth() {
             textonly: textonly,
             html: html
     });
-//     
+//$.mobile.loading( "hide")
+*/     
 
+  $("body").append('<div class="modalWindow"/>');
+  var theme = $.mobile.loader.prototype.options.theme,
+        msgText = "",
+        textVisible = false,
+        textonly = false;
+        html = "";
+    $.mobile.loading( "show", {
+            text: msgText,
+            textVisible: textVisible,
+            theme: theme,
+            textonly: textonly,
+            html: html
+    });
+  //$.mobile.showPageLoadingMsg();
+  //setTimeout('hideModal()', 2000);
 
 	var config = {
 		'client_id': '293590021422-g899ro91b6hfg1tkg9q1f51tipekid90.apps.googleusercontent.com',

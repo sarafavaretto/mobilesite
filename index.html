@@ -13,9 +13,22 @@
 		<script src="./assets/js/index.js"></script>
 		<script src="./js/jquery.mobile-1.4.5.min.js"></script>
 		
-<script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
-    <script type="text/javascript">
-    </script>
+		<script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
+		
+		<style>
+		.modalWindow{
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			z-index: 1500;
+			background: white;
+			opacity: 0.7;
+		}
+
+		.ui-loader{
+			z-index: 1501;
+		}
+        </style>
 
 
 
@@ -54,7 +67,7 @@
 					<h1>Scelta Merende:</h1>
 					<h3 id="nomeUtente"></h3>
 					<h3 id="Classe"></h3>
-					<form id="sceltaForm" method="POST" action="https://www.googleapis.com/fusiontables/v2/query/">
+					<form id="sceltaForm"  method="POST" action="https://www.googleapis.com/fusiontables/v2/query/">
 						<div data-demo-html="true">
 							<div class="ui-field-contain">
 								<label for="listaMerende">Merende:</label>
