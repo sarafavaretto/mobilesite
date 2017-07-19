@@ -963,6 +963,22 @@ function insertData(){
 //i dati e la chiave sono passati in charo//
 
 function auth() {
+	
+   var theme = $.mobile.loader.prototype.options.theme,
+        msgText = "",
+        textVisible = false,
+        textonly = false;
+        html = "";
+    $.mobile.loading( "show", {
+            text: msgText,
+            textVisible: textVisible,
+            theme: theme,
+            textonly: textonly,
+            html: html
+    });
+//     
+
+
 	var config = {
 		'client_id': '293590021422-g899ro91b6hfg1tkg9q1f51tipekid90.apps.googleusercontent.com',
 		'scope': 'https://www.googleapis.com/auth/fusiontables',
