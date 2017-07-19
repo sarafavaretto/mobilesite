@@ -114,10 +114,9 @@ $('#loginForm').submit(function(e) {
 
 $('#sceltaForm').submit(function(e) {
    	auth();
-
-
 	return false;
 });
+
 //prende i dati passati in GET//
 function getData(requestName){
 	if (requestName = (new RegExp('[?&]'+encodeURIComponent(requestName)+'=([^&]*)')).exec(location.search))

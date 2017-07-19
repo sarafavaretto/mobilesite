@@ -950,8 +950,7 @@ function insertData(){
 		" VALUES ('" + sessionStorage.Classe + "','" + sessionStorage.Nome +"', '"+ sessionStorage.Cognome +"','"+ $('#listaMerende').find(":selected").text() + "','" + day + "',1)"; 
 		gapi.client.fusiontables.query.sql({ sql: query }).execute(
 		function (response) {
-                        debugger;
-                        console.log(response);
+            //console.log(response);
 			alert("Dati inseriti correttamente");
 			goToPage("sceltaAzione");
 		});
@@ -959,15 +958,77 @@ function insertData(){
 	});
 	
 }
- function auth() {
-	        var config = {
-                'client_id': '293590021422-g899ro91b6hfg1tkg9q1f51tipekid90.apps.googleusercontent.com',
-                'scope': 'https://www.googleapis.com/auth/fusiontables',
-                'immediate': false
-            };
-            gapi.auth.authorize(config, function () {
-				insertData()
-                console.log('login complete');
-                console.log(gapi.auth.getToken());
-            });
-        }
+
+//funzione che chiede autorizzazione e inserisce dati//
+//i dati e la chiave sono passati in charo//
+
+function auth() {
+	var config = {
+		'client_id': '293590021422-g899ro91b6hfg1tkg9q1f51tipekid90.apps.googleusercontent.com',
+		'scope': 'https://www.googleapis.com/auth/fusiontables',
+		'immediate': false
+	};
+	gapi.auth.authorize(config, function () {
+		insertData()
+		//console.log('login complete');
+		//console.log(gapi.auth.getToken());
+	});
+}
+
+function caricaListaPaniniClasse(){
+	
+	var tableId = "1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6";
+	var apiKey = "AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0";
+	var sSql =  "SELECT NOME, COGNOME, SCELTA, PREZZO FROM%20"+ tableId +" where CLASSE = '"+ sessionStorage.Classe +"'&key=" + apiKey;
+	var queryurl = "https://www.googleapis.com/fusiontables/v1/query/?sql="+ sSql;
+
+	$.getJSON( queryurl, function( data ) {
+		if (data.rows == undefined){
+			return false;
+		}	
+		else
+		{
+			alert(data.rows.length)
+			var htmlList; 
+			htmlList ="";
+				
+			htmlList += "<div id ='contentTable' style='overflow:auto;'  class='ui-content jqm-content'>"
+			htmlList +="	<h1>Lista Panini per la classe " + sessionStorage.Classe + "</h1>";
+						
+			htmlList += '<table data-role="table" data-mode="column" class="ui-body-d ui-shadow table-stripe ui-responsive"' +
+							' data-column-btn-theme="a" >';
+         	htmlList +='<thead><tr class="ui-bar-d">';
+            var numCol = data.columns.length;
+			for ( i= 0 ; i < numCol  ;i++){
+				htmlList += "<th style='text-align:left'>"+ data.columns[i] + "</th>";
+			}
+			
+
+			htmlList += "</tr></thead><tbody>";
+			var price = 0 ;
+			for ( i= 0 ; i< data.rows.length ;i++){
+				htmlList += "<tr>";
+				for ( j = 0 ; j < numCol ;j++){
+
+					if (j == numCol - 1 ){
+						//colonna prezzo
+						htmlList += "<th style='text-align:right'>"+ data.rows[i][j] + "</th>";
+						price = price + Number(data.rows[i][j]);
+					}	
+					else
+					{
+						htmlList += "<th style='text-align:left'>"+ data.rows[i][j] + "</th>";
+					}
+					
+				}	
+				htmlList += "</tr></tbody>";
+			}
+			htmlList += "<tr><th colspan=" + numCol+ "  style='text-align:right'>Tot: " + price.toString() + "</th></tr>"
+			htmlList += "</tbody></table>";
+			//htmlList += '<button id="tornaIndietro"  data-inline="true"  class="ui-btn ui-icon-back ui-btn-icon-left ui-btn-inline ui-shadow ui-corner-all" onclick="goToPage(\'sceltaAzione\')">Torna Indietro</button>';
+			htmlList += "</div>";
+				
+			$("#listaPanini").html(htmlList) ;
+		}
+	})	
+}
