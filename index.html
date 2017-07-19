@@ -113,8 +113,7 @@ $('#loginForm').submit(function(e) {
 });
 
 $('#sceltaForm').submit(function(e) {
-   	auth();
-    insertData()
+   	insertData()
 
 	return false;
 });
@@ -130,6 +129,7 @@ $(document).ready(function(){
 	$("#contentTable" ).remove();
 	switch (sessionStorage.Page){
 		case "sceltaPanini":
+			auth()
 			$("#login").css("display", "none");
 			$("#listaPanini").css("display", "none");
 			$("#sceltaAzione").css("display", "none");
