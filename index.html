@@ -13,7 +13,6 @@
 		<script src="./assets/js/index.js"></script>
 		<script src="./js/jquery.mobile-1.4.5.min.js"></script>
 		
-		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
 <script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
     <script type="text/javascript">
         function auth() {
@@ -126,6 +125,7 @@ $('#loginForm').submit(function(e) {
 });
 
 $('#sceltaForm').submit(function(e) {
+        debugger;
 	auth();
     var d = new Date();
 	var MM = (d.getMonth()+1).toString();
