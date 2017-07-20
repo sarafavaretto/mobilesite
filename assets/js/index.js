@@ -946,11 +946,11 @@ function deleteData(rowid){
 		'immediate': false
 	};
 	gapi.auth.authorize(config, function () {
-		deleteFusionData();
+		deleteFusionData(rowid);
 	});
 }
 
-function deleteFusionData(){
+function deleteFusionData(rowid){
 	
 	var d = new Date();
 	var MM = (d.getMonth()+1).toString();
