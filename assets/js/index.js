@@ -959,11 +959,11 @@ function deleteFusionData(rowid){
 	var day = MM + "/" + dd + "/" + YY;
 	gapi.client.setApiKey('AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0');
 	gapi.client.load('fusiontables', 'v1', function () {                
-	var query = "DELETE FROM 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6 WHERE IDROW= "  + rowid;
+	var query = "DELETE FROM 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6 WHERE ROWID= "  + rowid;
 	gapi.client.fusiontables.query.sql({ sql: query }).execute(
 	function (response) {
 		//console.log(response);
-		alert("Dati inseriti correttamente");
+		alert("Dato eliminato correttamente");
 		goToPage("sceltaAzione");
 	});
 		
