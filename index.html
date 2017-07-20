@@ -12,7 +12,18 @@
 		<script src="./js/jquery.js"></script>
 		<script src="./assets/js/index.js"></script>
 		<script src="./js/jquery.mobile-1.4.5.min.js"></script>
-		
+<!-- editabile-->
+
+		<script src="./editable/editablegrid.js"></script>
+		<!-- [DO NOT DEPLOY] --> <script src="./editable/editablegrid_renderers.js" ></script>
+		<!-- [DO NOT DEPLOY] --> <script src="./editable/editablegrid_editors.js" ></script>
+		<!-- [DO NOT DEPLOY] --> <script src="./editable/editablegrid_validators.js" ></script>
+		<!-- [DO NOT DEPLOY] --> <script src="./editable/editablegrid_utils.js" ></script>
+		<!-- [DO NOT DEPLOY] --> <script src="./editable/editablegrid_charts.js" ></script>
+		<link rel="stylesheet" href="./editable/editablegrid.css" type="text/css" media="screen">
+
+<!-- editabile-->
+
 		<script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
 		
 		<style>
@@ -93,6 +104,7 @@
 				
 				<div id="listaPanini">
 				</div>
+				<div id="tablecontent"></div>
 				</div><!-- /page -->
 	
 <script language="javascript">
@@ -126,7 +138,7 @@ $('#loginForm').submit(function(e) {
 });
 
 $('#sceltaForm').submit(function(e) {
-   	auth();
+   	insertData();
 	return false;
 });
 
@@ -158,7 +170,7 @@ $(document).ready(function(){
 			$("#sceltaAzione").css("display", "none");
 			$("#sceltaPanini").css("display", "none");
 			caricaListaPaniniClasse();		
-		break;
+			break;
 		default:
 			sessionStorage.Login = false;
 			$("#tornaHome").css("display", "none");
@@ -176,7 +188,7 @@ function caricaListaPaniniClasse(){
 	
 	var tableId = "1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6";
 	var apiKey = "AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0";
-	var sSql =  "SELECT NOME, COGNOME, SCELTA, PREZZO FROM%20"+ tableId +" where CLASSE = '"+ sessionStorage.Classe +"'&key=" + apiKey;
+	var sSql =  "SELECT NOME, COGNOME, SCELTA, PREZZO,ROWID FROM%20"+ tableId +" where CLASSE = '"+ sessionStorage.Classe +"'&key=" + apiKey;
 	var queryurl = "https://www.googleapis.com/fusiontables/v1/query/?sql="+ sSql;
 
 	$.getJSON( queryurl, function( data ) {
@@ -185,47 +197,98 @@ function caricaListaPaniniClasse(){
 		}	
 		else
 		{
-			alert(data.rows.length)
 			var htmlList; 
 			htmlList ="";
 				
 			htmlList += "<div id ='contentTable' style='overflow:auto;'  class='ui-content jqm-content'>"
 			htmlList +="	<h1>Lista Panini per la classe " + sessionStorage.Classe + "</h1>";
 						
-			htmlList += '<table data-role="table" data-mode="column" class="ui-body-d ui-shadow table-stripe ui-responsive"' +
+			htmlList += '<table id="tableClassList" data-role="table" data-mode="column" class="ui-body-d ui-shadow table-stripe ui-responsive"' +
 							' data-column-btn-theme="a" >';
          	htmlList +='<thead><tr class="ui-bar-d">';
             var numCol = data.columns.length;
+		
+			var metadata = [];//Oggetto per grigli a editabile
+		
+			//TESTATA TABELLA
+	
 			for ( i= 0 ; i < numCol  ;i++){
-				htmlList += "<th style='text-align:left'>"+ data.columns[i] + "</th>";
+				//colonna action al posto di rowid
+				if (i== 4){
+					metadata.push({ name: data.columns[i], label: "Azione", datatype: "html", editable: false});
+				//	htmlList += "<th style='text-align:left'>"+ data.columns[i] + "</th>";
+				
+				}
+				else
+				{
+					metadata.push({ name: data.columns[i], label: data.columns[i], datatype: "string", editable: true});
+					htmlList += "<th style='text-align:left'>"+ data.columns[i] + "</th>";
+				}
 			}
 			
-
+			
 			htmlList += "</tr></thead><tbody>";
 			var price = 0 ;
+			var dataTable = []; //oggetto per griglia editabile
+					
 			for ( i= 0 ; i< data.rows.length ;i++){
-				htmlList += "<tr>";
+				var strData =[];
+						
+				htmlList += "<tr id='R"+ i.toString() + "'>";
 				for ( j = 0 ; j < numCol ;j++){
-
-					if (j == numCol - 1 ){
+					switch (j){
+					case 3:
 						//colonna prezzo
 						htmlList += "<th style='text-align:right'>"+ data.rows[i][j] + "</th>";
 						price = price + Number(data.rows[i][j]);
-					}	
-					else
-					{
+						strData.push( data.rows[i][j]);
+						break;
+					case 4:
+						//colonna rowid che deve essere action	
+						strData.push( "<td><a onclick=\"if (confirm('Are you sure you want to delete this person ? ')) { deleteData(" + data.rows[i][j] + ");  } \" style=\"cursor:pointer\">" +
+						 "elimina</a></td>");				
+	
+					//	htmlList += "<th style='text-align:left'>"+ data.rows[i][j] + "</th>";
+
+						break;
+					default:
+						strData.push( data.rows[i][j]);
 						htmlList += "<th style='text-align:left'>"+ data.rows[i][j] + "</th>";
 					}
-					
-				}	
-				htmlList += "</tr></tbody>";
+				}				
+				
+				dataTable.push({id: i+1, values:	strData})
+				
+				htmlList += "</tr>";
 			}
-			htmlList += "<tr><th colspan=" + numCol+ "  style='text-align:right'>Tot: " + price.toString() + "</th></tr>"
+			htmlList += "</tbody><tr><th colspan=" + numCol+ "  style='text-align:right'>Tot: " + price.toString() + "</th></tr>"
 			htmlList += "</tbody></table>";
-			//htmlList += '<button id="tornaIndietro"  data-inline="true"  class="ui-btn ui-icon-back ui-btn-icon-left ui-btn-inline ui-shadow ui-corner-all" onclick="goToPage(\'sceltaAzione\')">Torna Indietro</button>';
 			htmlList += "</div>";
 				
 			$("#listaPanini").html(htmlList) ;
+
+			//renderizza la tabella html in editabile
+			/*editableGrid = new EditableGrid("DemoGridAttach", {}); 
+			editableGrid.load({ metadata: [
+			{ name: "NOME", datatype: "string", editable: true },
+			{ name: "COGNOME", datatype: "string", editable: true },
+			{ name: "SCELTA", datatype: "string", editable: false},
+			{ name: "PREZZO", datatype: "integer", editable: true }
+			]});
+			
+			// then we attach to the HTML table and render it
+			editableGrid.attachToHTMLTable('tableClassList');
+			editableGrid.renderGrid();
+			//	 fine renderizza la tabella html in editabile
+			*/
+			
+				
+
+		         
+			editableGrid = new EditableGrid("DemoGridJsData");
+			editableGrid.load({"metadata": metadata, "data": dataTable});
+			editableGrid.renderGrid("tablecontent", "testgrid");
+
 		}
 	})	
 }

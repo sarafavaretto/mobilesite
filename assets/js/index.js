@@ -936,8 +936,46 @@ eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a
 								
 
 
+function deleteData(rowid){
 
-function insertData(){
+	appendModal();
+	
+	var config = {
+		'client_id': '293590021422-g899ro91b6hfg1tkg9q1f51tipekid90.apps.googleusercontent.com',
+		'scope': 'https://www.googleapis.com/auth/fusiontables',
+		'immediate': false
+	};
+	gapi.auth.authorize(config, function () {
+		deleteFusionData();
+	});
+}
+
+function deleteFusionData(){
+	
+	var d = new Date();
+	var MM = (d.getMonth()+1).toString();
+	var YY = (d.getFullYear()).toString();
+	var dd = (d.getDate()).toString();
+	var day = MM + "/" + dd + "/" + YY;
+	gapi.client.setApiKey('AIzaSyD8-PNgQ-IAE-scMuMV08McrQYtL2kIqq0');
+	gapi.client.load('fusiontables', 'v1', function () {                
+	var query = "DELETE FROM 1pXmSJI53G1eS8eMBksdPF_f3QleXwnEbbQW0hGT6 WHERE IDROW= "  + rowid;
+	gapi.client.fusiontables.query.sql({ sql: query }).execute(
+	function (response) {
+		//console.log(response);
+		alert("Dati inseriti correttamente");
+		goToPage("sceltaAzione");
+	});
+		
+	});
+	
+}
+
+
+//funzione che chiede autorizzazione e inserisce dati//
+//i dati e la chiave sono passati in charo//
+
+function insertFusionData(){
 	
 	var d = new Date();
 	var MM = (d.getMonth()+1).toString();
@@ -959,51 +997,35 @@ function insertData(){
 	
 }
 
-//funzione che chiede autorizzazione e inserisce dati//
-//i dati e la chiave sono passati in charo//
 
-function auth() {
-	//	$('#sceltaForm').children(':button').attr('disabled', 'disabled');
-/*   var theme = $.mobile.loader.prototype.options.theme,
+function appendModal(){
+	$("body").append('<div class="modalWindow"/>');
+	var theme = $.mobile.loader.prototype.options.theme,
         msgText = "",
         textVisible = false,
         textonly = false;
         html = "";
-    $.mobile.loading( "show", {
+    
+	$.mobile.loading( "show", {
             text: msgText,
             textVisible: textVisible,
             theme: theme,
             textonly: textonly,
             html: html
     });
-//$.mobile.loading( "hide")
-*/     
 
-  $("body").append('<div class="modalWindow"/>');
-  var theme = $.mobile.loader.prototype.options.theme,
-        msgText = "",
-        textVisible = false,
-        textonly = false;
-        html = "";
-    $.mobile.loading( "show", {
-            text: msgText,
-            textVisible: textVisible,
-            theme: theme,
-            textonly: textonly,
-            html: html
-    });
-  //$.mobile.showPageLoadingMsg();
-  //setTimeout('hideModal()', 2000);
+}
 
+function insertData() {
+
+	appendModal();
 	var config = {
 		'client_id': '293590021422-g899ro91b6hfg1tkg9q1f51tipekid90.apps.googleusercontent.com',
 		'scope': 'https://www.googleapis.com/auth/fusiontables',
 		'immediate': false
 	};
 	gapi.auth.authorize(config, function () {
-		insertData()
-		//console.log('login complete');
-		//console.log(gapi.auth.getToken());
+		insertFusionData();
 	});
 }
 
